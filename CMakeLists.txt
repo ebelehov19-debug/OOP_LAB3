@@ -53,7 +53,10 @@ if(BUILD_TESTING)
         FetchContent_MakeAvailable(googletest)
     endif()
 
-    add_executable(lab_03_tests tests/test_date.cpp)
+    add_executable(lab_03_tests
+        tests/test_date.cpp
+        tests/test_date_set.cpp
+    )
     target_link_libraries(lab_03_tests PRIVATE lab_03_core GTest::gtest_main)
 
     include(GoogleTest)

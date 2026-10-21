@@ -1,0 +1,41 @@
+# CMake build directories and generated files
+/build/
+/build-*/
+/cmake-build-*/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/CTestTestfile.cmake
+/Testing/
+/_deps/
+/compile_commands.json
+/Makefile
+/build.ninja
+/.ninja_deps
+/.ninja_log
+
+# Compiled files and libraries
+/lab_03
+/lab_03_tests
+/a.out
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+*.pdb
+
+# IDE and editor temporary files
+/.idea/
+/.vs/
+*.swp
+*.swo
+*~
+
+# Operating system files
+.DS_Store
+Thumbs.db
