@@ -76,3 +76,152 @@ bool DateSet:: empty() const
 {
     return size_ == 0;
 }
+
+bool DateSet:: contains(const Date& date) const
+{
+    std:: size_t left = 0;
+    std:: size_t right = size_;
+
+    while(left<right)
+    {
+        std:: size_t mid = left + (right - left)/2;
+        if(data_[mid] == date) return 1;
+
+        if(data_[mid]<date) 
+        {
+            left = mid+1;
+        }
+        else 
+        {
+            right = mid;
+        }
+    }
+    return 0;
+}
+
+bool DateSet:: operator() (const Date& date) const
+{
+    return contains(date);
+}
+
+bool DateSet:: add(const Date& date)
+{
+    if(!date.is_valid())
+    {
+        return 0;
+    }
+
+    if(contains(date))
+    {
+        return false;
+    }
+
+    if(size_ == capacity_)
+    {
+        std::size_t new_capacity = capacity_ == 0 ? 1 : capacity_ * 2;
+        Date* new_data = new Date[new_capacity];
+
+        for (std::size_t i = 0; i < size_; ++i)
+        {
+            new_data[i] = data_[i];
+        }
+
+        delete[] data_;
+        data_ = new_data;
+        capacity_ = new_capacity;
+    }
+
+    std::size_t pos = size_;
+
+    while (pos > 0 && date < data_[pos - 1])
+    {
+        data_[pos] = data_[pos - 1];
+        --pos;
+    }
+
+    data_[pos] = date;
+    ++size_;
+
+    return true;
+}
+
+ bool DateSet:: remove(const Date& date)
+ {
+     std::size_t left = 0;
+    std::size_t right = size_;
+
+    while (left < right)
+    {
+        std::size_t mid = left + (right - left) / 2;
+
+        if (data_[mid] == date)
+        { for (std::size_t i = mid + 1; i < size_; ++i)
+            {
+                data_[i - 1] = data_[i];
+            }
+
+            --size_;
+            return 1;
+        }
+         if (data_[mid] < date)
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            right = mid;
+        }
+    }
+    return 0;
+ }
+
+DateSet& DateSet:: operator+=(const Date& date)
+{
+    add(date);
+    return *this;
+}
+
+DateSet& DateSet:: operator-=(const Date& date)
+{
+    remove(date);
+    return *this;
+}
+
+bool DateSet::operator==(const DateSet& dateset) const
+{
+    if (size_ != dateset.size_)
+    {
+        return false;
+    }
+
+    for (std::size_t i = 0; i < size_; ++i)
+    {
+        if (!(data_[i] == dateset.data_[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool DateSet::operator!=(const DateSet& dateset) const
+{
+    return !(*this == dateset);
+}
+std::ostream& operator<<(std::ostream& ofs, const DateSet& dateset)
+{
+    ofs << '{';
+
+    for (std::size_t i = 0; i < dateset.size_; ++i)
+    {
+        if (i > 0)
+        {
+            ofs << ',';
+        }
+        ofs << ' ' << dateset.data_[i];
+    }
+
+    ofs << " }";
+    return ofs;
+}

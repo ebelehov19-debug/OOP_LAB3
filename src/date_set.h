@@ -17,24 +17,24 @@ public:
     DateSet& operator=(DateSet&& other) noexcept;
     ~DateSet();
 
-    bool add(const Date&);
-    bool remove(const Date&);
-    bool contains(const Date&) const;
-    bool operator() (const Date&) const;
+    bool add(const Date& date);
+    bool remove(const Date& date);
+    bool contains(const Date& date) const;
+    bool operator() (const Date& date) const;
 
     std::size_t size() const;
     bool empty() const;
 
-    DateSet& operator+=(const Date&);
-    DateSet& operator-=(const Date&);
+    DateSet& operator+=(const Date& date);
+    DateSet& operator-=(const Date& date);
 
-    DateSet operator| (const DateSet&) const;
-    DateSet operator& (const DateSet&) const;
-    DateSet operator- (const DateSet&) const;
+    DateSet operator| (const DateSet& dateset) const;
+    DateSet operator& (const DateSet& dateset) const;
+    DateSet operator- (const DateSet& dateset) const;
 
-    bool operator== (const DateSet&) const;
-    bool operator!= (const DateSet&) const;
+    bool operator== (const DateSet& dateset) const;
+    bool operator!= (const DateSet& dateset) const;
 
-    friend std::ostream& operator<<(std::ostream&, const DateSet&);
+    friend std::ostream& operator<<(std::ostream& ofs, const DateSet& dateset);
 
 };
