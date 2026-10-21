@@ -74,7 +74,11 @@ size_t DateSet:: size() const
 
 bool DateSet:: empty() const
 {
-    return size_ == 0;
+    if (size_ == 0)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 bool DateSet:: contains(const Date& date) const
@@ -101,7 +105,11 @@ bool DateSet:: contains(const Date& date) const
 
 bool DateSet:: operator() (const Date& date) const
 {
-    return contains(date);
+    if (contains(date))
+    {
+        return 1;
+    }
+    return 0;
 }
 
 bool DateSet:: add(const Date& date)
@@ -113,7 +121,7 @@ bool DateSet:: add(const Date& date)
 
     if(contains(date))
     {
-        return false;
+        return 0;
     }
 
     if(size_ == capacity_)
@@ -142,7 +150,7 @@ bool DateSet:: add(const Date& date)
     data_[pos] = date;
     ++size_;
 
-    return true;
+    return 1;
 }
 
  bool DateSet:: remove(const Date& date)
@@ -187,27 +195,155 @@ DateSet& DateSet:: operator-=(const Date& date)
     return *this;
 }
 
+DateSet DateSet::operator|(const DateSet& dateset) const
+{
+    DateSet result;
+    const std::size_t new_capacity = size_ + dateset.size_;
+    if (new_capacity == 0)
+    {
+        return result;
+    }
+
+    Date* new_data = new Date[new_capacity];
+    delete[] result.data_;
+    result.data_ = new_data;
+    result.capacity_ = new_capacity;
+
+    std::size_t i = 0;
+    std::size_t j = 0;
+
+    while (i < size_ && j < dateset.size_)
+    {
+        if (data_[i] < dateset.data_[j])
+        {
+            result.data_[result.size_++] = data_[i++];
+        }
+        else if (dateset.data_[j] < data_[i])
+        {
+            result.data_[result.size_++] = dateset.data_[j++];
+        }
+        else
+        {
+            result.data_[result.size_++] = data_[i++];
+            ++j;
+        }
+    }
+
+    while (i < size_)
+    {
+        result.data_[result.size_++] = data_[i++];
+    }
+    while (j < dateset.size_)
+    {
+        result.data_[result.size_++] = dateset.data_[j++];
+    }
+
+    return result;
+}
+
+DateSet DateSet::operator&(const DateSet& dateset) const
+{
+    DateSet result;
+    const std::size_t new_capacity = size_ < dateset.size_ ? size_ : dateset.size_;
+    if (new_capacity == 0)
+    {
+        return result;
+    }
+
+    Date* new_data = new Date[new_capacity];
+    delete[] result.data_;
+    result.data_ = new_data;
+    result.capacity_ = new_capacity;
+
+    std::size_t i = 0;
+    std::size_t j = 0;
+
+    while (i < size_ && j < dateset.size_)
+    {
+        if (data_[i] < dateset.data_[j])
+        {
+            ++i;
+        }
+        else if (dateset.data_[j] < data_[i])
+        {
+            ++j;
+        }
+        else
+        {
+            result.data_[result.size_++] = data_[i++];
+            ++j;
+        }
+    }
+
+    return result;
+}
+
+DateSet DateSet::operator-(const DateSet& dateset) const
+{
+    DateSet result;
+    if (size_ == 0)
+    {
+        return result;
+    }
+
+    Date* new_data = new Date[size_];
+    delete[] result.data_;
+    result.data_ = new_data;
+    result.capacity_ = size_;
+
+    std::size_t i = 0;
+    std::size_t j = 0;
+
+    while (i < size_ && j < dateset.size_)
+    {
+        if (data_[i] < dateset.data_[j])
+        {
+            result.data_[result.size_++] = data_[i++];
+        }
+        else if (dateset.data_[j] < data_[i])
+        {
+            ++j;
+        }
+        else
+        {
+            ++i;
+            ++j;
+        }
+    }
+
+    while (i < size_)
+    {
+        result.data_[result.size_++] = data_[i++];
+    }
+
+    return result;
+}
+
 bool DateSet::operator==(const DateSet& dateset) const
 {
     if (size_ != dateset.size_)
     {
-        return false;
+        return 0;
     }
 
     for (std::size_t i = 0; i < size_; ++i)
     {
         if (!(data_[i] == dateset.data_[i]))
         {
-            return false;
+            return 0;
         }
     }
 
-    return true;
+    return 1;
 }
 
 bool DateSet::operator!=(const DateSet& dateset) const
 {
-    return !(*this == dateset);
+    if (*this == dateset)
+    {
+        return 0;
+    }
+    return 1;
 }
 std::ostream& operator<<(std::ostream& ofs, const DateSet& dateset)
 {

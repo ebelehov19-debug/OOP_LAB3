@@ -45,9 +45,9 @@ Date::~Date()
 
 bool Date::is_valid() const
 {
-    if (month_ > 12 || month_ < 1) return false;
-    if (year_ < 1) return false;
-    if (day_ < 1) return false;
+    if (month_ > 12 || month_ < 1) return 0;
+    if (year_ < 1) return 0;
+    if (day_ < 1) return 0;
 
     int days_in_month = 31;
     if (month_ == 4 || month_ == 6 || month_ == 9 || month_ == 11) 
@@ -62,25 +62,45 @@ bool Date::is_valid() const
         days_in_month = leap_year ? 29 : 28;
         }
 
-    return day_ <= days_in_month;
+    if (day_ <= days_in_month)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 bool Date:: operator== (const Date& other) const
 {
-    return day_ == other.day_ && month_ == other.month_ && year_ == other.year_;
+    if (day_ == other.day_ && month_ == other.month_ && year_ == other.year_)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 bool Date::operator<(const Date& other) const
 {
-    if (year_ != other.year_) 
+    if (year_ < other.year_)
     {
-        return year_ < other.year_;
+        return 1;
     }
-    if (month_ != other.month_) 
+    if (year_ > other.year_)
     {
-        return month_ < other.month_;
+        return 0;
     }
-    return day_ < other.day_;
+    if (month_ < other.month_)
+    {
+        return 1;
+    }
+    if (month_ > other.month_)
+    {
+        return 0;
+    }
+    if (day_ < other.day_)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 std::ostream& operator<<(std::ostream& out, const Date& date)
